@@ -1,0 +1,41 @@
+///Facade design pattern
+
+/*
+-> as design pattern facade defines an simpler interface to an complex subsystem.
+->  For example, in our car factory, we have different departments to produce different components like engine, body, and accessories. As client, we don’t care how every department does produce its own job. We just create a factory instance and get it to work.
+*/
+
+import Foundation
+
+class Engine {
+    func produceEngine() {
+        print("Engine is ready")
+    }
+}
+
+class Body {
+    func produceBody() {
+        print("Body is ready")
+    }
+}
+
+class Accessories {
+    func produceAccessories() {
+        print("Accessories is ready")
+    }
+}
+
+class Facade {
+    let engine = Engine()
+    let body = Body()
+    let accessories = Accessories()
+
+    func produceCar() {
+        engine.produceEngine()
+        body.produceBody()
+        accessories.produceAccessories()
+    }
+}
+
+let facade = Facade()
+facade.produceCar()

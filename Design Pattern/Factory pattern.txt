@@ -1,0 +1,75 @@
+///Factory pattern
+
+/*
+encapsulates the object creation process and users can simply pass in parameters to a generic factory class without knowing how the objects are actually being created. Also it gives clean code.
+*/
+
+import Foundation
+
+protocol Human {
+    func introduction()
+}
+
+class Engineer: Human {
+    var name: String
+
+    init(name: String) {
+        self.name = name
+    }
+
+    func introduction() {
+        print("My name is \(self.name) and I am an engineer")
+    }
+}
+
+class Doctor: Human {
+    var name: String
+
+    init(name: String) {
+        self.name = name
+    }
+
+    func introduction() {
+        print("My name is \(self.name) and I am a doctor")  
+    }
+}
+
+class Artist: Human {
+    var name: String
+
+    init(name: String) {
+        self.name = name
+    }
+
+    func introduction() {
+        print("My name is \(self.name) and I am an artist")
+    }
+}
+
+enum HumanType {
+    case engineer
+    case doctor
+    case artist
+}
+
+class HumanFactory {
+    func getHuman(humanName: String,humanType: HumanType) -> Human {
+        switch humanType {
+            case .engineer:
+            return Engineer(name: humanName)
+            case .doctor:
+            return Doctor(name: humanName)
+            case .artist:
+            return Artist(name: humanName)
+        }
+    }
+}
+
+var humanFactory = HumanFactory()
+var firstHuman = humanFactory.getHuman(humanName: "Jack",humanType: .engineer)
+var secondHuman = humanFactory.getHuman(humanName: "Jill",humanType: .artist)
+var thirdHuman = humanFactory.getHuman(humanName: "Bill", humanType: .doctor)
+
+firstHuman.introduction()
+secondHuman.introduction()
+thirdHuman.introduction()

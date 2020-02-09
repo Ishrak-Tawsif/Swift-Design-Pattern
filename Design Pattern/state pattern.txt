@@ -1,0 +1,120 @@
+///State pattern
+
+/*
+
+-> The State pattern is commonly used in Swift to convert massive switch-base state machines into the objects.
+
+-> State pattern can be recognized by methods that change their behavior depending on the objects’ state, controlled externally.
+
+*/
+
+fileprivate protocol CoffeMachineState {
+    func isReadyToBrew() -> Bool
+    func brew()
+}
+
+extension CoffeMachineState {
+    func isReadyToBrew() -> Bool {
+        return false
+    }
+
+    func brew() {
+
+    }
+}
+
+fileprivate struct StandbyState: CoffeMachineState {
+
+}
+
+fileprivate struct EmptyCapsuleBinState: CoffeMachineState {
+    var contex: CoffeMachine
+
+    init(contex: CoffeMachine) {
+        self.contex = contex
+    }
+
+    func isReadyToBrew() -> Bool {
+        guard contex.isCapsuleEmpty else {
+            contex.state = StandbyState()
+            return false
+        }
+    }
+
+    contex.state = InsertCapsuleBinState(contex: contex)
+    return contex.state.isReadyToBrew()
+}
+
+fileprivate struct FillwaterTankState: CoffeMachineState {
+    var contex: CoffeMachine
+
+    init(contex: CoffeMachine) {
+        self.contex = contex
+    }
+
+    func isReadyToBrew() -> Bool {
+        guard contex.iswaterTankFilled else {
+            contex.state = StandbyState()
+            return false 
+        }
+    }
+
+    contex.state = EmptyCapsuleBinState(contex: contex)
+    return contex.state.isReadyToBrew()
+}
+
+fileprivate struct InsertCapsuleBinState: CoffeMachineState {
+    var contex: CoffeMachine
+
+    init(contex: CoffeMachine) {
+        self.contex = contex
+    }
+
+    func isReadyToBrew() -> Bool {
+        guard contex.isCapsuleInserted else {
+            contex.state = StandbyState()
+            return false
+        }
+    }
+
+    return true
+}
+
+fileprivate struct BrewCoffeState: CoffeMachineState {
+    var contex: CoffeMachine
+
+    init(contex: CoffeMachine) {
+        self.contex = contex
+    }
+
+    func brew() {
+        contex.state = FillwaterTankState(contex: contex)
+        guard contex.state.isReadyToBrew() else {
+            contex.state = StandbyState()
+            return
+        }
+    }
+    contex.state = StandbyState()
+}
+
+class CoffeMachine {
+    fileprivate var iswaterTankFilled: Bool
+    fileprivate var isCapsuleEmpty: Bool
+    fileprivate var isCapsuleInserted: Bool
+
+    fileprivate var state: CoffeMachineState = StandbyState()
+
+    init(iswaterTankFilled: Bool,isCapsuleEmpty: Bool,isCapsuleInserted: Bool) {
+        self.iswaterTankFilled = iswaterTankFilled
+        self.isCapsuleEmpty = isCapsuleEmpty
+        self.isCapsuleInserted = isCapsuleInserted
+    }
+
+    func brew() {
+        state = BrewCoffeState(contex: self)
+        state.brew()
+    }
+}
+
+var coffemachine = CoffeMachine(iswaterTankFilled: true,isCapsuleEmpty: true,isCapsuleInserted: true)
+coffemachine.brew()

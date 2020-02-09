@@ -1,0 +1,77 @@
+///prototype pattern
+
+/*
+If we have a huge datafile and we need to read it from diffrent classes, then everytime we need to read it
+we have to load data in file.Lets say we need 100ms to load data to file.If we need to read the file from 10
+class then we will need 100*10 = 1000ms.
+But if we create it only once and then copy that for rest of the nine time and copying file take 10ms each time then it will cost us (100*1) + (10*9) = 190 ms. And this method is known as prototyping.
+
+->swift support build in prototyping for all types without class object. If we declate var a = 10,b = a then a and 
+b will have diffrent memory but same value.But if we declare var a = ClassA(),var b = a then b will hold the refrence of a cause they are refrence type. Changing the value of b will also change the value of a and vice versa.
+
+->swift have default support for prototyping of class (NSCopying).By creating a clone we simply make two diffrence 
+refrence. var a = ClassA(), var b = a.clone(). Here Changing the value of b doesn't affect a and vice versa.
+
+output of code example part 1:
+Bangladesh India
+Bangladesh France
+Bangladesh France
+
+output of code example part 2:
+Bangladesh India
+Bangladesh India
+Bangladesh France
+*/
+
+import Foundation
+
+///part 1: (not prototype)
+
+/*class Game {
+    var teamA : String
+    var teamB : String
+
+    init(teamA: String,teamB: String) {
+        self.teamA = teamA
+        self.teamB = teamB
+    }
+}
+
+var cricket = Game(teamA: "Bangladesh",teamB: "India")
+print("\(cricket.teamA) \(cricket.teamB)")
+
+var football = cricket
+football.teamA = "Bangladesh"
+football.teamB = "France"
+print("\(cricket.teamA) \(cricket.teamB)")
+print("\(football.teamA) \(football.teamB)")*/
+
+///part 2 (prototype)
+
+class Game: NSCopying {
+    var teamA : String
+    var teamB : String
+
+    /// MARK: - NSCopying
+    func copy(with zone: NSZone? = nil) -> Any {
+        return Game(teamA: self.teamA,teamB: self.teamB)
+    }
+
+    init(teamA: String,teamB: String) {
+        self.teamA = teamA
+        self.teamB = teamB
+    }
+
+    func clone() -> Game {
+        return self.copy() as! Game
+    }
+}
+
+var cricket = Game(teamA: "Bangladesh",teamB: "India")
+print("\(cricket.teamA) \(cricket.teamB)")
+
+var football = cricket.clone()
+football.teamA = "Bangladesh"
+football.teamB = "France"
+print("\(cricket.teamA) \(cricket.teamB)")
+print("\(football.teamA) \(football.teamB)")

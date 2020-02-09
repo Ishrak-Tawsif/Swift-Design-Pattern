@@ -1,0 +1,37 @@
+///Flyweight pattern
+
+/*
+-> The Flyweight pattern has a single purpose: minimizing memory intake.Pattern achieves it by sharing parts of object state between multiple objects.
+->  For example different students of a college may have different name and id but all of their college name will be same.So we
+create a new class name sharedData and keep this information in that shared class.
+Then we create an instance of type sharedData and keep an object of class SharedData in it.
+-> As class is refrence type so it won't create that instance multiple time,instead everytime we keep the instance like this self.sharedData = shareddata it just hold the refrence of it. Thus all the student get same college name but name only hold one memory location.
+*/
+
+import Foundation
+
+class Student {
+    var name: String
+    var id: String
+    var sharedData: SharedData
+
+    init(name: String,id: String,shareddata: SharedData) {
+        self.name = name
+        self.id = id
+        self.sharedData = shareddata
+    }
+}
+
+class SharedData {
+    var collegeName: String = "Abc college"
+}
+
+var shareddata = SharedData()
+var student1 = Student(name: "John",id: "001",shareddata: shareddata)
+var student2 = Student(name: "jack",id: "002",shareddata: shareddata)
+var student3 = Student(name: "Jill",id: "003",shareddata: shareddata)
+
+
+print("\(student1.name) \(student1.id) \(student1.sharedData.collegeName)")
+print("\(student2.name) \(student2.id) \(student2.sharedData.collegeName)")
+print("\(student3.name) \(student3.id) \(student3.sharedData.collegeName)")

@@ -1,0 +1,47 @@
+/*
+Singleton Pattern:
+
+Singleton Pattern guaranteed that only one instance of class is instantiated
+
+-> Only one instance of class can be created
+-> The Singleton class should be final to prevent this to be subclassed (if a singleton need 
+  additional functionality, it should be encapsulated in an extension). 
+-> Initializer should be private, so that no instance of class can be created from outside of the class
+-> The one and only instace of class will be declared inside of the class, which should be static.
+   In Swift, is just necessary to use a static type property, which is guaranteed to be lazily initialized only once, even when accessed across multiple threads simultaneously
+*/
+
+
+
+import Foundation
+
+final public class GlobalStorage {
+    private init() {}
+    static let shared = GlobalStorage()
+
+    private var name : String = ""
+    private var age : CGFloat = 0.0
+}
+
+extension GlobalStorage {
+    public func setName(name: String) {
+        self.name = name
+    }
+
+    public func setAge(age: CGFloat) {
+        self.age = age
+    }
+
+    public func getName() -> String {
+        return self.name
+    }
+
+    public func getAge() -> CGFloat {
+        return self.age
+    }
+}
+
+let globalStorage = GlobalStorage.shared
+globalStorage.setName(name: "john")
+globalStorage.setAge(age: 31.0)
+print("\(globalStorage.getName()) \(globalStorage.getAge())")
