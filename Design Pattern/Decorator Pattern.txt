@@ -1,0 +1,65 @@
+///decrator pattern
+
+/*
+
+-> The decorator pattern dynamically modifies the behavior of a core object without changing its existing class definition.
+
+-> The decorator pattern has two primary components: a core object that will have its behavior modified, and a decorator object that brings about the changed behavior in the core object.
+
+*/
+
+protocol Transporting {
+    func getSpeed() -> Double
+    func getTraction() -> Double
+}
+
+///core component
+final class RaceCar: Transporting {
+    private let speed = 10.0
+    private let traction = 10.0
+
+    func getSpeed() -> Double {
+        return speed
+    }
+
+    func getTraction() -> Double {
+        return traction
+    }
+}
+
+///decorator
+class TireDecorator: Transporting {
+    private let transportable: Transporting
+
+    init(transportable: Transporting) {
+        self.transportable = transportable
+    }
+
+    func getSpeed() -> Double {
+        return transportable.getSpeed()
+    }
+
+    func getTraction() -> Double {
+        return transportable.getTraction()
+    }
+}
+
+class offRoadTireDecorator: Transporting {
+    private let transportable: Transporting
+
+    init(transportable: Transporting) {
+        self.transportable = transportable
+    }
+
+    func getSpeed() -> Double {
+        return transportable.getSpeed() - 3
+    }
+
+    func getTraction() -> Double {
+        return transportable.getTraction() + 3
+    }
+}
+
+let defaultCar = RaceCar()
+let offRoadRaceCar = offRoadTireDecorator(transportable: defaultCar)
+print("\(offRoadRaceCar.getSpeed()) \(offRoadRaceCar.getTraction())")

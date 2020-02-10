@@ -1,0 +1,109 @@
+///chain of responsibility pattern
+
+
+/*
+
+-> The Chain of Responsibility design pattern allows for a chain of different objects (that inherit from the same class/interface), to pass on the responsibility of executing a piece of logic to another object.
+
+example : 
+
+Employees
+Employees can clear any expenses between £0–100.
+Boss
+If the employee has an expense bigger than that, they can approach their boss, who has the ability to clear a expense between £101–1000.
+CEO
+Any more than that then the employee needs to approach the CEO of the company who puts a strict limit of £10,000 on any expense. Anything else is likely to not get approved by the company.
+
+*/
+
+protocol Chain {
+    var nextManagementLevel: Chain{ get set }
+    func shouldEmpenditureApproved(expenditure: Expenditure)
+}
+
+class Expenditure {
+   var amount: Int
+
+    init(amount: Int) {
+        self.amount = amount
+    }
+}
+
+class CEO: Chain {
+    private var _nextManagementLevel: Chain?
+
+    var nextManagementLevel : Chain{
+        set{
+            _nextManagementLevel = newValue
+        }
+        get{
+            return _nextManagementLevel!
+        }
+    }
+
+    func shouldEmpenditureApproved(expenditure: Expenditure) {
+        if expenditure.amount >= 1001 && expenditure.amount < 10000 {
+            print("CEO can approve")
+        } else {
+            print("Not approved")
+        }
+    }
+}
+
+class Boss: Chain {
+    private var _nextManagementLevel: Chain?
+
+    var nextManagementLevel : Chain{
+        set{
+            _nextManagementLevel = newValue
+        }
+        get{
+            return _nextManagementLevel!
+        }
+    }
+
+    func shouldEmpenditureApproved(expenditure: Expenditure) {
+        if expenditure.amount > 101 && expenditure.amount < 1000 {
+            print("Boss can approve")
+        } else {
+            if _nextManagementLevel != nil{
+              print("Forwarding to CEO")
+              nextManagementLevel.shouldEmpenditureApproved(expenditure: expenditure)
+            }
+        }
+    }
+}
+
+class Employee: Chain {
+    private var _nextManagementLevel: Chain?
+
+    var nextManagementLevel : Chain{
+        set{
+            _nextManagementLevel = newValue
+        }
+        get{
+            return _nextManagementLevel!
+        }
+    }
+
+    func shouldEmpenditureApproved(expenditure: Expenditure) {
+        if expenditure.amount > 0 && expenditure.amount < 100 {
+            print("Approved")
+        } else {
+            if _nextManagementLevel != nil{
+              print("Forwarding to Boos")
+              nextManagementLevel.shouldEmpenditureApproved(expenditure: expenditure)
+            }
+        }
+    }
+}
+
+let ceo = CEO()
+let boss = Boss()
+let employee = Employee()
+
+boss.nextManagementLevel = ceo
+employee.nextManagementLevel = boss
+
+let expenditureObj = Expenditure(amount: 1001)
+employee.shouldEmpenditureApproved(expenditure: expenditureObj)
